@@ -1,1 +1,38 @@
-hello welcom
+git config --global user.name "Your Name"
+git config --global user.email "your-email@example.com"
+# Create and enter the directory
+mkdir my-cool-project
+cd my-cool-project
+
+# Initialize the local repository
+git init
+
+# Check the current state (you'll see no commits yet)
+git status
+
+# Create a dummy file
+echo "Hello World" > index.txt
+
+# Stage the file for a commit
+git add index.txt
+
+# Record the snapshot
+git commit -m "Initial commit: added index.txt"
+
+# View your commit history
+git log --oneline
+# Link your local repo to the remote one
+git remote add origin https://github.com/your-username/my-cool-project.git
+
+# Rename your branch to 'main' (standard practice)
+git branch -M main
+
+# Upload your local code to GitHub
+git push -u origin main
+# Downloads the entire project to a new folder
+git clone https://github.com/your-username/my-cool-project.git
+# Undo the last commit but keep your changes in the files
+git reset --soft HEAD~1
+
+# Hard reset: DELETE the last commit and all changes associated with it (Permanent!)
+git reset --hard HEAD~1
