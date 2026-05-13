@@ -36,3 +36,1069 @@ git reset --soft HEAD~1
 
 # Hard reset: DELETE the last commit and all changes associated with it (Permanent!)
 git reset --hard HEAD~1
+
+
+4. Create a Docker image for an application stored in a local repository and run the 
+application using docker image.
+
+# Step 1: Update Ubuntu packages
+sudo apt update
+
+# Step 2: Install Docker in Ubuntu
+sudo apt install docker.io -y
+
+# Step 3: Start Docker service
+sudo systemctl start docker
+
+# Step 4: Enable Docker service at boot
+sudo systemctl enable docker
+
+# Step 5: Check Docker installation version
+docker --version
+
+# Step 6: Create project folder
+mkdir myapp
+
+# Step 7: Move into project folder
+cd myapp
+
+# Step 8: Create Python application file
+nano app.py
+
+# Simple Python application
+print("Hello from Docker Container")
+
+# Step 9: Save file using CTRL+X, Y, ENTER
+
+# Step 10: Create Dockerfile
+nano Dockerfile
+# Base operating system image
+FROM ubuntu:latest
+
+# Install Python inside container
+RUN apt update && apt install -y python3
+
+# Set working directory inside container
+WORKDIR /app
+
+# Copy project files into container
+COPY . /app
+
+# Run application automatically
+CMD ["python3", "app.py"]
+
+# Step 11: Save Dockerfile using CTRL+X, Y, ENTER
+
+# Step 12: Build Docker image from Dockerfile
+sudo docker build -t myapp-image .
+
+# Step 13: View created Docker images
+sudo docker images
+
+# Step 14: Run container using Docker image
+sudo docker run --name mycontainer myapp-image
+
+# Step 15: Check running containers
+sudo docker ps
+
+# Step 16: Check all containers
+sudo docker ps -a
+
+# Step 17: Stop running container
+sudo docker stop mycontainer
+
+# Step 18: Start stopped container
+sudo docker start mycontainer
+
+# Step 19: View container logs/output
+sudo docker logs mycontainer
+
+# Step 20: Remove container
+sudo docker rm mycontainer
+
+# Step 21: Remove Docker image
+sudo docker rmi myapp-image
+
+# Step 1: Clone repository from GitHub
+git clone https://github.com/username/repository.git
+
+# Step 2: Move into repository folder
+cd repository
+
+# Step 3: Build Docker image from repository files
+sudo docker build -t myapp-image .
+
+# Step 4: Run application container
+sudo docker run --name mycontainer myapp-image
+
+
+ 5. Create and configure Jenkins files for workflow and build of an application 
+and push the image on docker hub..
+
+
+
+```bash
+# Step 1: Update Ubuntu packages
+sudo apt update
+
+# Step 2: Install Java for Jenkins
+sudo apt install openjdk-17-jdk -y
+
+# Step 3: Check Java version
+java --version
+
+# Step 4: Install Jenkins repository key
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+/usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+# Step 5: Add Jenkins repository
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+/etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# Step 6: Update packages again
+sudo apt update
+
+# Step 7: Install Jenkins
+sudo apt install jenkins -y
+
+# Step 8: Start Jenkins service
+sudo systemctl start jenkins
+
+# Step 9: Enable Jenkins at boot
+sudo systemctl enable jenkins
+
+# Step 10: Check Jenkins status
+sudo systemctl status jenkins
+
+# Step 11: Install Docker
+sudo apt install docker.io -y
+
+# Step 12: Start Docker service
+sudo systemctl start docker
+
+# Step 13: Enable Docker service
+sudo systemctl enable docker
+
+# Step 14: Add Jenkins user to Docker group
+sudo usermod -aG docker jenkins
+
+# Step 15: Restart Jenkins service
+sudo systemctl restart jenkins
+
+# Step 16: Open Jenkins in browser
+http://localhost:8080
+
+# Step 17: Get Jenkins admin password
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+---
+
+# Create Application Project
+
+```bash
+# Step 18: Create project folder
+mkdir myapp
+
+# Step 19: Move into project folder
+cd myapp
+
+# Step 20: Create Python application
+nano app.py
+```
+
+```python
+# Simple Python program
+print("Hello from Jenkins and Docker")
+```
+
+---
+
+# Create Dockerfile
+
+```bash
+# Step 21: Create Dockerfile
+nano Dockerfile
+```
+
+```Dockerfile
+# Use Ubuntu base image
+FROM ubuntu:latest
+
+# Install Python
+RUN apt update && apt install -y python3
+
+# Set working directory
+WORKDIR /app
+
+# Copy files into container
+COPY . /app
+
+# Run application
+CMD ["python3", "app.py"]
+```
+
+---
+
+# Create Jenkinsfile
+
+```bash
+# Step 22: Create Jenkinsfile
+nano Jenkinsfile
+```
+
+```groovy
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "yourdockerhubusername/myapp"
+    }
+
+    stages {
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME .'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+
+                    sh 'docker push $IMAGE_NAME'
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+# Push Project to GitHub
+
+```bash
+# Step 23: Initialize Git repository
+git init
+
+# Step 24: Add files to Git
+git add .
+
+# Step 25: Commit files
+git commit -m "Initial Jenkins Docker Project"
+
+# Step 26: Connect GitHub repository
+git remote add origin https://github.com/username/repository.git
+
+# Step 27: Push code to GitHub
+git push -u origin master
+```
+
+---
+
+# Configure Jenkins
+
+## Step 28: Install Suggested Plugins
+
+* Open Jenkins dashboard
+* Install suggested plugins
+
+---
+
+## Step 29: Add DockerHub Credentials
+
+* Go to:
+
+  * Manage Jenkins
+  * Credentials
+  * Global
+  * Add Credentials
+
+### Enter:
+
+* Username → DockerHub username
+* Password → DockerHub password
+* ID → `dockerhub`
+
+Save credentials.
+
+---
+
+## Step 30: Create Jenkins Pipeline Job
+
+* Dashboard → New Item
+* Enter job name
+* Select Pipeline
+* Click OK
+
+---
+
+## Step 31: Connect GitHub Repository
+
+Inside Pipeline section:
+
+* Pipeline Definition → Pipeline script from SCM
+* SCM → Git
+* Repository URL → GitHub repository link
+* Branch → main/master
+
+Save.
+
+---
+
+## Step 32: Build Jenkins Project
+
+* Click “Build Now”
+
+Jenkins will:
+
+1. Pull code from GitHub
+2. Read Jenkinsfile
+3. Build Docker image
+4. Push image to DockerHub
+
+---
+
+# Verify DockerHub Image
+
+Open DockerHub account.
+
+You will see:
+
+```text
+yourdockerhubusername/myapp
+```
+
+---
+
+# Important Viva Comments
+
+### What is Jenkins?
+
+Jenkins is a Continuous Integration and Continuous Deployment (CI/CD) tool.
+
+### What is Jenkinsfile?
+
+A file containing pipeline workflow automation steps.
+
+### What is CI/CD?
+
+* CI → Continuous Integration
+* CD → Continuous Deployment
+
+### Why Docker with Jenkins?
+
+Docker creates portable containers and Jenkins automates build and deployment.
+
+### Pipeline Stages Used
+
+1. Build Docker Image
+2. Push Docker Image to DockerHub
+
+### Important Commands
+
+```bash
+docker build -t image_name .
+docker push image_name
+git push origin master
+```
+
+
+6.Create a maven projects with all dependencies required for the application 
+in CI/CD pipeline.
+```bash
+# Step 1: Update Ubuntu packages
+sudo apt update
+
+# Step 2: Install Java Development Kit
+sudo apt install openjdk-17-jdk -y
+
+# Step 3: Check Java version
+java --version
+
+# Step 4: Install Maven
+sudo apt install maven -y
+
+# Step 5: Check Maven version
+mvn -version
+
+# Step 6: Create Maven project using archetype
+mvn archetype:generate -DgroupId=com.example \
+-DartifactId=myapp \
+-DarchetypeArtifactId=maven-archetype-quickstart \
+-DinteractiveMode=false
+
+# Step 7: Move into project folder
+cd myapp
+
+# Step 8: View project structure
+ls
+```
+
+---
+
+# Maven Project Structure
+
+```text
+myapp
+ ├── pom.xml
+ └── src
+     ├── main/java
+     └── test/java
+```
+
+---
+
+# Step 9: Open pom.xml File
+
+```bash
+nano pom.xml
+```
+
+Replace with this complete configuration:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Maven model version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Project group name -->
+    <groupId>com.example</groupId>
+
+    <!-- Project artifact name -->
+    <artifactId>myapp</artifactId>
+
+    <!-- Project version -->
+    <version>1.0-SNAPSHOT</version>
+
+    <!-- Packaging type -->
+    <packaging>jar</packaging>
+
+    <!-- Project dependencies -->
+    <dependencies>
+
+        <!-- JUnit dependency for testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Spring Core dependency -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.30</version>
+        </dependency>
+
+        <!-- Logging dependency -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- Build plugins -->
+    <build>
+        <plugins>
+
+            <!-- Compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+
+            <!-- Surefire plugin for testing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
+```
+
+---
+
+# Step 10: Save File
+
+```text
+CTRL + X
+Press Y
+Press ENTER
+```
+
+---
+
+# Step 11: Build Maven Project
+
+```bash
+mvn clean install
+```
+
+### Explanation
+
+* `clean` → removes old build files
+* `install` → compiles, tests, packages, and installs jar
+
+---
+
+# Step 12: Check Build Status
+
+If successful:
+
+```text
+BUILD SUCCESS
+```
+
+---
+
+# Step 13: Run Tests
+
+```bash
+mvn test
+```
+
+---
+
+# Step 14: Package Application
+
+```bash
+mvn package
+```
+
+Generated JAR file location:
+
+```text
+target/myapp-1.0-SNAPSHOT.jar
+```
+
+---
+
+# Step 15: Run Application
+
+```bash
+java -cp target/myapp-1.0-SNAPSHOT.jar com.example.App
+```
+
+---
+
+# CI/CD Integration Steps
+
+## Step 16: Create Jenkinsfile
+
+```bash
+nano Jenkinsfile
+```
+
+```groovy
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'
+    }
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/username/repository.git'
+            }
+        }
+
+        stage('Build Maven Project') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package Application') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+    }
+}
+```
+
+---
+
+# Step 17: Push Project to GitHub
+
+```bash
+# Initialize Git
+git init
+
+# Add project files
+git add .
+
+# Commit project
+git commit -m "Maven CI/CD Project"
+
+# Add GitHub repository
+git remote add origin https://github.com/username/repository.git
+
+# Push project to GitHub
+git push -u origin master
+```
+
+---
+
+# Step 18: Configure Jenkins Pipeline
+
+* Open Jenkins
+* Create New Item
+* Select Pipeline
+* Choose:
+
+  * Pipeline script from SCM
+  * SCM → Git
+  * Enter GitHub repository URL
+* Save project
+
+---
+
+# Step 19: Build Pipeline
+
+Click:
+
+```text
+Build Now
+```
+
+Jenkins will:
+
+1. Clone GitHub repository
+2. Download dependencies
+3. Build Maven project
+4. Run test cases
+5. Create JAR package
+
+---
+
+# Important Viva Comments
+
+### What is Maven?
+
+Maven is a build automation and dependency management tool for Java projects.
+
+### What is pom.xml?
+
+`pom.xml` is the main Maven configuration file containing dependencies and plugins.
+
+### What are Dependencies?
+
+External libraries required for the application.
+
+### What is CI/CD?
+
+* CI → Continuous Integration
+* CD → Continuous Deployment
+
+### Maven Lifecycle Commands
+
+```bash
+mvn clean
+mvn compile
+mvn test
+mvn package
+mvn install
+```
+
+### What is Jenkins Pipeline?
+
+Automation workflow for build, test, and deployment process.
+
+7.2:Integrate communication channel with Jenkins for status of project and also
+enable email notification for a build.
+
+```bash id="u84o2y"
+# Step 1: Update Ubuntu packages
+sudo apt update
+
+# Step 2: Install Jenkins
+sudo apt install jenkins -y
+
+# Step 3: Start Jenkins service
+sudo systemctl start jenkins
+
+# Step 4: Enable Jenkins service
+sudo systemctl enable jenkins
+
+# Step 5: Open Jenkins in browser
+http://localhost:8080
+
+# Step 6: Get Jenkins admin password
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+---
+
+# Install Required Jenkins Plugins
+
+## Step 7: Open Plugin Manager
+
+Go to:
+
+```text id="ybywqe"
+Manage Jenkins → Plugins
+```
+
+Install these plugins:
+
+```text id="v0wgjw"
+1. Email Extension Plugin
+2. Mailer Plugin
+3. Slack Notification Plugin (optional communication channel)
+```
+
+Restart Jenkins after installation.
+
+---
+
+# Configure Email Notification
+
+## Step 8: Open Jenkins System Configuration
+
+Go to:
+
+```text id="bt4sao"
+Manage Jenkins → System
+```
+
+---
+
+## Step 9: Configure SMTP Mail Server
+
+Inside “E-mail Notification” section enter:
+
+```text id="9e6ixf"
+SMTP Server: smtp.gmail.com
+Use SMTP Authentication: YES
+Username: yourgmail@gmail.com
+Password: Gmail App Password
+Use SSL: YES
+SMTP Port: 465
+```
+
+---
+
+## Step 10: Generate Gmail App Password
+
+Open:
+
+[Google Account Security](https://myaccount.google.com/security?utm_source=chatgpt.com)
+
+Steps:
+
+```text id="4l2dms"
+1. Enable 2-Step Verification
+2. Open App Passwords
+3. Generate App Password
+4. Copy generated password
+5. Use it in Jenkins SMTP password field
+```
+
+---
+
+## Step 11: Test Email Configuration
+
+Inside Jenkins:
+
+```text id="1b2k7g"
+Manage Jenkins → System → Test Configuration
+```
+
+Enter recipient email and click:
+
+```text id="1v8izx"
+Test configuration by sending test e-mail
+```
+
+---
+
+# Create Jenkins Pipeline Project
+
+## Step 12: Create New Pipeline Job
+
+```text id="qybvzk"
+Dashboard → New Item → Pipeline → OK
+```
+
+---
+
+# Configure Build Email Notification
+
+## Step 13: Add Post Build Action
+
+Inside project:
+
+```text id="f7dclq"
+Post Build Actions → Editable Email Notification
+```
+
+Fill details:
+
+```text id="yx6p8h"
+Project Recipient List: yourgmail@gmail.com
+Triggers:
+✔ Success
+✔ Failure
+✔ Always
+```
+
+Save project.
+
+---
+
+# Create Jenkinsfile
+
+## Step 14: Create Jenkinsfile in Project
+
+```bash id="r9fd4g"
+nano Jenkinsfile
+```
+
+Add this pipeline code:
+
+```groovy id="3icdfg"
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Build') {
+            steps {
+                echo 'Building Application'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running Test Cases'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying Application'
+            }
+        }
+    }
+
+    post {
+
+        success {
+            mail to: 'yourgmail@gmail.com',
+            subject: 'Jenkins Build Success',
+            body: 'Build completed successfully.'
+        }
+
+        failure {
+            mail to: 'yourgmail@gmail.com',
+            subject: 'Jenkins Build Failed',
+            body: 'Build failed. Check Jenkins console output.'
+        }
+    }
+}
+```
+
+---
+
+# Integrate Communication Channel (Slack)
+
+## Step 15: Create Slack Workspace
+
+Open:
+
+[Slack](https://slack.com?utm_source=chatgpt.com)
+
+Create workspace and channel.
+
+---
+
+## Step 16: Create Slack App
+
+Open:
+
+[Slack API Apps](https://api.slack.com/apps?utm_source=chatgpt.com)
+
+Steps:
+
+```text id="prc4k3"
+1. Create New App
+2. Enable Incoming Webhooks
+3. Create Webhook URL
+4. Copy Webhook URL
+```
+
+---
+
+# Configure Slack in Jenkins
+
+## Step 17: Configure Slack Notification
+
+Go to:
+
+```text id="48rt9h"
+Manage Jenkins → System → Slack
+```
+
+Enter:
+
+```text id="gk2l3v"
+Workspace Name
+Credential/Webhook URL
+Channel Name
+```
+
+Save configuration.
+
+---
+
+# Add Slack Notification in Jenkinsfile
+
+## Step 18: Update Jenkinsfile
+
+```groovy id="h8h9k2"
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Build') {
+            steps {
+                echo 'Building Application'
+            }
+        }
+    }
+
+    post {
+
+        success {
+            slackSend (
+                channel: '#general',
+                message: 'Build Successful'
+            )
+        }
+
+        failure {
+            slackSend (
+                channel: '#general',
+                message: 'Build Failed'
+            )
+        }
+    }
+}
+```
+
+---
+
+# Step 19: Push Project to GitHub
+
+```bash id="1h7pqk"
+# Initialize Git
+git init
+
+# Add files
+git add .
+
+# Commit changes
+git commit -m "Added Jenkins Notifications"
+
+# Add GitHub repository
+git remote add origin https://github.com/username/repository.git
+
+# Push project
+git push -u origin master
+```
+
+---
+
+# Step 20: Run Jenkins Build
+
+Inside Jenkins:
+
+```text id="t4d3b4"
+Click Build Now
+```
+
+Jenkins will:
+
+1. Execute pipeline
+2. Send email notification
+3. Send Slack notification
+4. Show build status
+
+---
+
+# Important Viva Comments
+
+### What is Jenkins?
+
+Jenkins is a CI/CD automation tool used for build and deployment.
+
+### Why Email Notification?
+
+To notify developers about build success or failure.
+
+### Why Slack Integration?
+
+To provide real-time project communication and build updates.
+
+### What is SMTP?
+
+Simple Mail Transfer Protocol used for sending emails.
+
+### What is Post Build Action?
+
+Action performed after Jenkins build completion.
+
+### Notification Types
+
+```text id="zodjqw"
+1. Success Notification
+2. Failure Notification
+3. Always Notification
+```
+
+### Important Jenkins Plugins
+
+```text id="a2npfz"
+1. Mailer Plugin
+2. Email Extension Plugin
+3. Slack Notification Plugin
+```
+
